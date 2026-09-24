@@ -1,9 +1,9 @@
 package com.multibank.automation.pages;
 
+import java.util.List;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-
-import java.util.List;
 
 public class SpotMarketPage {
 
@@ -50,11 +50,17 @@ public class SpotMarketPage {
         return spotMarketDescription.isVisible();
     }
 
- public int getAssetCount() {
+    public int getAssetCount() {
     page.waitForSelector(
-            "a[href='/explore/XLM']",
+            "a[href^='/explore/']",
             new Page.WaitForSelectorOptions().setTimeout(30000)
     );
+
+    Locator lastAsset = assetLinks.last();
+
+    lastAsset.scrollIntoViewIfNeeded();
+
+    page.waitForTimeout(2000);
 
     return assetLinks.count();
 }
@@ -63,11 +69,11 @@ public class SpotMarketPage {
         return assetLinks.allInnerTexts();
     }
 
-  public Locator getAsset(String symbol) {
-    return page.locator(
-            "a[href=\"/explore/" + symbol + "\"]:visible"
-    );
-}
+    public Locator getAsset(String symbol) {
+        return page.locator(
+                "a[href=\"/explore/" + symbol + "\"]:visible"
+        );
+    }
 
     public boolean isAssetVisible(String symbol) {
         return getAsset(symbol).isVisible();
@@ -78,44 +84,45 @@ public class SpotMarketPage {
     }
 
     public Locator getTradingRow(String symbol) {
-    return page.locator(
-            "a[href=\"/explore/" + symbol + "\"]"
-    ).locator("xpath=ancestor::tr");
-}
+        return page.locator(
+                "a[href=\"/explore/" + symbol + "\"]"
+        ).locator("xpath=ancestor::tr");
+    }
 
-public String getAssetSymbol(String symbol) {
-    return getTradingRow(symbol)
-            .locator("td[id$='displayName-td'] span")
-            .first()
-            .innerText()
-            .trim();
-}
+    public String getAssetSymbol(String symbol) {
+        return getTradingRow(symbol)
+                .locator("td[id$='displayName-td'] span")
+                .first()
+                .innerText()
+                .trim();
+    }
 
-public String getAssetDisplayName(String symbol) {
-    return getTradingRow(symbol)
-            .locator("td[id$='displayName-td'] span")
-            .nth(1)
-            .innerText()
-            .trim();
-}
+    public String getAssetDisplayName(String symbol) {
+        return getTradingRow(symbol)
+                .locator("td[id$='displayName-td'] span")
+                .nth(1)
+                .innerText()
+                .trim();
+    }
 
-public String getAssetPrice(String symbol) {
-    return getTradingRow(symbol)
-            .locator("td[id$='price-td']")
-            .innerText()
-            .trim();
-}
+    public String getAssetPrice(String symbol) {
+        return getTradingRow(symbol)
+                .locator("td[id$='price-td']")
+                .innerText()
+                .trim();
+    }
 
-public String getAssetChange(String symbol) {
-    return getTradingRow(symbol)
-            .locator("td[id$='change-td']")
-            .innerText()
-            .trim();
-}
+    public String getAssetChange(String symbol) {
+        return getTradingRow(symbol)
+                .locator("td[id$='change-td']")
+                .innerText()
+                .trim();
+    }
 
-public boolean hasWeeklyChart(String symbol) {
-    return getTradingRow(symbol)
-            .locator("td[id$='week-chart-td'] svg")
-            .count() > 0;
-}
+    public boolean hasWeeklyChart(String symbol) {
+        return getTradingRow(symbol)
+                .locator("td[id$='week-chart-td']")
+                .locator("svg")
+                .count() > 0;
+    }
 }
