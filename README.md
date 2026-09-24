@@ -272,6 +272,20 @@ Push to master
 Pull requests
 Manual workflow execution
 
+Dynamic Market Data Assumption:
+CI / Dynamic Data Note:-
+
+The Spot Market is dynamically populated by the website/backend and may not render the
+same set of assets consistently across environments.
+
+During repeated local executions, the Spot Market tests were validated successfully.
+The CI environment occasionally returned a reduced set of dynamically rendered assets,
+causing assertions based on a specific asset such as XLM to time out.
+
+This is treated as an environment/data-dependency risk rather than a core framework
+failure. The behaviour is documented so that the test suite does not assume that
+volatile market data is a fixed UI contract.
+
 The workflow:
 
 Checks out the repository
